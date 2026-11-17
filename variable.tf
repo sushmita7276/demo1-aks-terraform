@@ -4,7 +4,7 @@ variable "resource_group_name"{
 }
 variable "location" {
     type = string
-    default = "canadaeast"
+    default = "koreasouth"
 }
 variable "vnet_name"{
     type = string
