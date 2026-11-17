@@ -12,15 +12,22 @@ stages:
   jobs:
   - job: TerraformPlan
     steps:
+    - checkout: self
+
     - task: TerraformInstaller@1
       inputs:
         terraformVersion: '1.13.3'
 
-    - script: |
-        terraform init
-        terraform validate
-        terraform plan -out=tfplan
-      displayName: 'Terraform Plan'
+    - task: AzureCLI@2
+      displayName: Terraform Init, Validate and Plan
+      inputs:
+        azureSubscription: 'YOUR-SERVICE-CONNECTION-NAME'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          terraform init -input=false
+          terraform validate
+          terraform plan -input=false -out=tfplan
 
     - publish: tfplan
       artifact: terraform-plan
@@ -41,7 +48,12 @@ stages:
     - download: current
       artifact: terraform-plan
 
-    - script: |
-        terraform init
-        terraform apply -auto-approve "$(Pipeline.Workspace)/terraform-plan/tfplan"
-      displayName: 'Terraform Apply'
+    - task: AzureCLI@2
+      displayName: Terraform Apply
+      inputs:
+        azureSubscription: 'demo1-aks-service-connection'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          terraform init -input=false
+          terraform apply -input=false -auto-approve "$(Pipeline.Workspace)/terraform-plan/tfplan"
