@@ -4,7 +4,7 @@ variable "resource_group_name"{
 }
 variable "location" {
     type = string
-    default = "Westus2"
+    default = "Westus3"
 }
 variable "vnet_name"{
     type = string
