@@ -27,8 +27,10 @@ stages:
         inlineScript: |
           terraform init -input=false
           terraform validate
+          echo "Checking Terraform state resources..."
+          terraform state list
           terraform plan -input=false -out=tfplan
-          terraform show -no-color tfplan
+          
 
     - publish: tfplan
       artifact: terraform-plan
